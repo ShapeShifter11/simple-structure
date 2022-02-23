@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 char square[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 int choice, player;
@@ -7,6 +8,7 @@ int choice, player;
 int checkForWin();
 void displayBoard();
 void markBoard(char mark);
+void delay(int second);
 
 int main()
 {
@@ -14,7 +16,8 @@ int main()
     char mark;
     player = 1;
 
-    do{
+    do
+    {
         displayBoard();
         player = (player % 2) ? 1 : 2;
 
@@ -25,19 +28,34 @@ int main()
 
         markBoard(mark);
 
-        gameStatus = checkForWin();
+        if ((gameStatus = checkForWin()) == 0)
+        {
+            displayBoard();
+            markBoard(mark);
+            printf("\n\nplayer 2 wins the game!\n\n");
 
+            delay(100);
+        }
+        else if ((gameStatus = checkForWin()) == 1)
+        {
+            displayBoard();
+            markBoard(mark);
+            printf("\n\nplayer 1 wins the game!\n\n");
+
+            delay(10);
+        }
         player++;
 
-    }while(gameStatus == -1);
+    } while (gameStatus == -1);
 
     return 0;
 }
 
-int checkForWin(){
+int checkForWin()
+{
     int returnValue = 0;
 
-    if(square[1] == square[2] && square[2] == square[3])
+    if (square[1] == square[2] && square[2] == square[3])
         returnValue = 1;
 
     else if (square[4] == square[5] && square[5] == square[6])
@@ -62,8 +80,7 @@ int checkForWin(){
         returnValue = 1;
 
     else if (square[1] != '1' && square[2] != '2' && square[3] != '3' &&
-        square[4] != '4' && square[5] != '5' && square[6] != '6' && square[7]
-        != '7' && square[8] != '8' && square[9] != '9')
+             square[4] != '4' && square[5] != '5' && square[6] != '6' && square[7] != '7' && square[8] != '8' && square[9] != '9')
         returnValue = 0;
 
     else
@@ -72,7 +89,8 @@ int checkForWin(){
     return returnValue;
 }
 
-void displayBoard(){
+void displayBoard()
+{
 
     system("cls");
 
@@ -94,7 +112,8 @@ void displayBoard(){
     printf("     |     |     \n");
 }
 
-void markBoard(char mark){
+void markBoard(char mark)
+{
     if (choice == 1 && square[1] == '1')
         square[1] = mark;
 
@@ -121,10 +140,23 @@ void markBoard(char mark){
 
     else if (choice == 9 && square[9] == '9')
         square[9] = mark;
-    else{
-        printf("Invalid move ");
+    else
+    {
+        if (checkForWin() == -1)
+            printf("Invalid move ");
 
         player--;
         getchar();
     }
+}
+
+void delay(int second)
+{
+
+    int milsec = 1000 * second;
+
+    clock_t startTime = clock();
+
+    while (clock() < (startTime + milsec))
+        ;
 }
